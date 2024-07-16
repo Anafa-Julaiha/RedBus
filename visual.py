@@ -43,7 +43,7 @@ def home_page():
 def bus_page():
     st.markdown(
         """
-        <h1 style='text-align: center;'>Bus Details</h1>
+        <h1 style='text-align: center;'>RedBus Project</h1>
         """,
         unsafe_allow_html=True
     )
@@ -96,11 +96,11 @@ def bus_page():
 with st.sidebar: 
     selected = option_menu(
         menu_title="Main Menu", 
-        options=["Home", "Bus Details"]
+        options=["Home", "RedBus"]
     )
 
 # Display the selected page
-if selected == "Bus Details":
+if selected == "RedBus":
     bus_page()
 elif selected == "Home":
     home_page()
