@@ -37,8 +37,31 @@ time_ranges = create_time_ranges(data)
 
 # Define each page as a function
 def home_page():
-    st.title("Home")
-    st.write("Welcome to the Home Page")
+    st.title("Welcome to the RedBus Project")
+    st.write("""
+        This project aims to provide detailed information about various bus routes and services using data 
+        scraped from the RedBus website. The data is stored in a PostgreSQL database and visualized using Streamlit.
+    """)
+
+    st.subheader("Features")
+    st.write("""
+        - **Automated Web Scraping**: Automatically scrape bus route and service details from the RedBus website.
+        - **Data Storage**: Store the scraped data in a PostgreSQL database.
+        - **Data Visualization**: Filter and visualize bus details using an interactive Streamlit application.
+    """)
+
+    st.subheader("How to Use")
+    st.write("""
+        1. Navigate to the **RedBus** page using the sidebar menu.
+        2. Use the filters to narrow down the bus details based on your preferences.
+        3. View the filtered data in a tabular format.
+        4. Reset the filters to view all available data.
+    """)
+
+    st.subheader("Contact Us")
+    st.write("""
+        If you have any questions or feedback, please feel free to reach out to us at [email@example.com](mailto:email@example.com).
+    """)
 
 def bus_page():
     st.markdown(
