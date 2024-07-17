@@ -12,4 +12,4 @@ This project automates the process of scraping bus details from the RedBus websi
 1. Python 3.7+
 2. PostgreSQL
 3. Google Chrome and ChromeDriver
-Python packages: selenium, pandas, sqlalchemy, psycopg2, streamlit, streamlit_option_menu
+4. Python packages: selenium, pandas, sqlalchemy, psycopg2, streamlit, streamlit_option_menu
