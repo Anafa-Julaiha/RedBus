@@ -58,10 +58,6 @@ def home_page():
         4. Reset the filters to view all available data.
     """)
 
-    st.subheader("Contact Us")
-    st.write("""
-        If you have any questions or feedback, please feel free to reach out to us at [email@example.com](mailto:email@example.com).
-    """)
 
 def bus_page():
     st.markdown(
