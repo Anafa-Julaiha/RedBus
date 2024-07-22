@@ -1,9 +1,11 @@
 
+
 import psycopg2
 from sqlalchemy import create_engine
 import pandas as pd
 import streamlit as st
 from streamlit_option_menu import option_menu
+
 
 DATABASE_URL = "postgresql://postgres:1234@localhost/redbus"
 
@@ -20,9 +22,22 @@ data = fetch_data()
 
 # Ensure departing_time is properly recognized as datetime
 data['departing_time'] = pd.to_datetime(data['departing_time'], format='%H:%M:%S').dt.time
-
 data.drop('bus_route_link', axis=1, inplace=True)
-routes = data['bus_route_name'].unique()
+
+#split the bus_route_name from and to columns
+data[['from', 'to']] = data['bus_route_name'].str.split(' to ', expand=True)
+data['to'] = data['to'].str.replace('Bus', '').str.strip()
+data.drop('bus_route_name', axis=1, inplace=True)
+
+#index changed from and to columns
+col_to_move_1 = data.pop('from')  # Remove column 'from'
+data.insert(1, 'from', col_to_move_1)
+col_to_move_2 = data.pop('to')  # Remove column 'to'
+data.insert(2, 'to', col_to_move_2)
+
+# unique values
+From = data['from'].unique()
+to = data['to'].unique()
 bus = data['bus_type'].unique()
 depart = data['departing_time'].unique()
 
@@ -34,6 +49,7 @@ def create_time_ranges(data):
     return time_ranges
 
 time_ranges = create_time_ranges(data)
+
 
 # Define each page as a function
 def home_page():
@@ -69,7 +85,7 @@ def bus_page():
     st.subheader("Welcome to the Bus Details")
     col1, col_space, col2 = st.columns([1, 0.2, 1])
     with col1:
-        bus_route = st.selectbox('Select Route', options=['All'] + list(routes))
+        bus_route_from = st.selectbox('From', options=['All'] + list(From))
         star = st.select_slider(
             "Select the Star Rating:",
             options=[5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5, 0, 'All'],
@@ -77,6 +93,7 @@ def bus_page():
         time = st.selectbox("Select the Departing Time", options=['All'] + time_ranges)
         
     with col2:
+        bus_route_to =  st.selectbox('To', options=['All'] + list(to))
         bus_type = st.selectbox("Select the A/C Type:",
                      options=['All', 'A/C', 'Non A/C'])
         seat_type = st.selectbox("Select the Seat Type:",
@@ -87,8 +104,10 @@ def bus_page():
     
     if apply:
         filtering = data.copy()
-        if bus_route != 'All':
-            filtering = filtering[filtering['bus_route_name'] == bus_route]
+        if bus_route_from != 'All':
+            filtering = filtering[filtering['from'] == bus_route_from]
+        if bus_route_to != 'All':
+            filtering = filtering[filtering['to'] == bus_route_to]
         if star != 'All':
             filtering = filtering[filtering['star_rating'] == float(star)]
         if bus_type != 'All':
@@ -106,7 +125,8 @@ def bus_page():
         st.dataframe(data)
 
     if reset:
-        bus_route = 'All'
+        bus_route_from = 'All'
+        bus_route_to = 'All'
         star = 'All'
         bus_type = 'All'
         seat_type = 'All'
