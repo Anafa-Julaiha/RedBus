@@ -1,5 +1,4 @@
 
-
 import psycopg2
 from sqlalchemy import create_engine
 import pandas as pd
@@ -24,10 +23,16 @@ data = fetch_data()
 data['departing_time'] = pd.to_datetime(data['departing_time'], format='%H:%M:%S').dt.time
 data.drop('bus_route_link', axis=1, inplace=True)
 
+#replace the AC to A/C and Non A/C to Non_AC
+data['bus_type'] = data['bus_type'].str.replace('AC','A/C').str.strip()
+data['bus_type'] = data['bus_type'].str.replace('NON','Non').str.strip()
+data['bus_type'] = data['bus_type'].str.replace('Non A/C','Non_AC').str.strip()
+
 #split the bus_route_name from and to columns
 data[['from', 'to']] = data['bus_route_name'].str.split(' to ', expand=True)
 data['to'] = data['to'].str.replace('Bus', '').str.strip()
 data.drop('bus_route_name', axis=1, inplace=True)
+
 
 #index changed from and to columns
 col_to_move_1 = data.pop('from')  # Remove column 'from'
@@ -95,7 +100,7 @@ def bus_page():
     with col2:
         bus_route_to =  st.selectbox('To', options=['All'] + list(to))
         bus_type = st.selectbox("Select the A/C Type:",
-                     options=['All', 'A/C', 'Non A/C'])
+                     options=['All', 'A/C', 'Non_AC'])
         seat_type = st.selectbox("Select the Seat Type:",
                                  options=['All', 'Seater', 'Sleeper'])
 
